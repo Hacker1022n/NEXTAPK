@@ -1,0 +1,1 @@
+{"name":"nextapk","private":true,"type":"module","scripts":{"dev":"netlify dev","hash":"node hash.mjs"},"dependencies":{"@netlify/blobs":"^8.1.0"},"devDependencies":{"netlify-cli":"^17.0.0"}}

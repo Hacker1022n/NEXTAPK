@@ -1,0 +1,93 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXTAPK – Android apps, ready to install</title><meta name="description" content="Browse and download Android apps published by NEXTAPK.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234b3fe0'/%3E%3Cpath d='M11 9l9 7-9 7' stroke='%23fff' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f2f4fa;--card:#fff;--ink:#141a33;--mut:#5b6384;--line:#dfe3f0;--ac:#4b3fe0;--go:#0a9f6e;--r:14px}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1224;--card:#171c36;--ink:#eef0fb;--mut:#9aa2c7;--line:#2a3050;--ac:#8b82ff;--go:#2fd39a}}
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 "Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.w{max-width:1080px;margin:auto;padding:0 16px}.bar{display:flex;gap:12px;align-items:center;height:64px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:22px;letter-spacing:-.5px}.logo b{color:var(--ac)}
+.bar form{flex:1}input,select,textarea{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+nav a{padding:6px 10px;border-radius:8px;color:var(--mut)}nav a:hover{color:var(--ink)}
+.hero{padding:44px 0 20px}.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:0 0 8px;letter-spacing:-1px}.hero p{color:var(--mut);margin:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0}.chip{padding:6px 14px;border:1px solid var(--line);border-radius:99px;background:var(--card);white-space:nowrap;cursor:pointer}.chip[aria-pressed=true]{background:var(--ac);color:#fff;border-color:var(--ac)}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:12px}.tools select{width:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:14px 0 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;gap:12px}
+.card:hover{border-color:var(--ac)}.ic{width:64px;height:64px;border-radius:16px;background:var(--line) center/cover;flex:none;display:grid;place-items:center;font-weight:800;color:var(--ac)}
+.card h3{margin:0;font-size:16px}.mut{color:var(--mut);font-size:13px}
+.btn{display:inline-block;padding:12px 22px;border-radius:12px;background:var(--go);color:#fff;font-weight:700;border:0;cursor:pointer}.btn.alt{background:var(--ac)}.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:16px 0}
+.head{display:flex;gap:18px;align-items:center;flex-wrap:wrap}.head .ic{width:96px;height:96px;border-radius:24px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);align-items:center;flex-wrap:wrap}
+.skel{height:92px;border-radius:var(--r);background:linear-gradient(90deg,var(--line),var(--card),var(--line));background-size:200%;animation:s 1.2s infinite}@keyframes s{to{background-position:-200%}}
+.empty{text-align:center;padding:60px 0;color:var(--mut)}label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;display:none}
+footer{border-top:1px solid var(--line);padding:24px 0;color:var(--mut);font-size:14px}footer a{margin-right:14px}
+@media(max-width:600px){nav{display:none}.two{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<header><div class="w bar"><a href="/" class="logo" aria-label="NEXTAPK home"><svg width="30" height="30" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="var(--ac)"/><path d="M11 9l9 7-9 7" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>NEXT<b>APK</b></a>
+<form id="sf" role="search"><input id="q" type="search" placeholder="Search apps, developers or package names" aria-label="Search"></form>
+<nav><a href="/">Apps</a><a href="/about">About</a></nav></div></header>
+<main class="w" id="app" tabindex="-1"></main>
+<footer><div class="w"><a href="/terms">Terms &amp; Conditions</a><a href="/about">About</a><a href="/about#safety">APK safety</a><p>Apps here are published by the NEXTAPK administrator. Install only software you trust.</p></div></footer>
+<div id="toast" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),app=$('#app'),CATS=['Games','Education','Tools','Productivity','Social','Entertainment','Photography','Video Players','Music & Audio','Communication','Utilities','Personalization','Finance','Health & Fitness','Other'];
+const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a))x.startsWith('on')?e.addEventListener(x.slice(2),v):x=='class'?e.className=v:e.setAttribute(x,v);e.append(...k.flat().filter(v=>v!=null));return e};
+const toast=m=>{const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._);t._=setTimeout(()=>t.style.display='none',3500)};
+const api=async(p,o={})=>{const r=await fetch('/api/'+p,{...o,headers:{'x-nx':'1',...(o.json?{'content-type':'application/json'}:{}),...o.headers},body:o.json?JSON.stringify(o.json):o.body});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Request failed');return d};
+const mb=b=>(b/1048576).toFixed(1)+' MB',day=t=>new Date(t).toLocaleDateString(undefined,{dateStyle:'medium'});
+const icon=a=>el('div',{class:'ic',style:a.icon?`background-image:url(${a.icon})`:''},a.icon?'':a.name[0]);
+const nav=u=>{history.pushState({},'',u);route()};
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="/"]');if(a&&!e.metaKey&&!a.hasAttribute('download')&&!a.pathname.startsWith('/api')){e.preventDefault();nav(a.getAttribute('href'))}});
+addEventListener('popstate',route);$('#sf').onsubmit=e=>{e.preventDefault();nav('/?q='+encodeURIComponent($('#q').value))};
+const card=a=>el('a',{href:'/app/'+a.slug,class:'card'},icon(a),el('div',{},el('h3',{},a.name),el('div',{class:'mut'},a.dev||'Unknown developer'),el('div',{class:'mut'},`${a.rating?'★ '+a.rating.toFixed(1)+' · ':''}v${a.ver} · ${a.cat} · ${a.dl.toLocaleString()} downloads${a.demo?' · Sample':''}`)));
+async function home(){const u=new URLSearchParams(location.search),q=u.get('q')||'',cat=u.get('cat')||'',sort=u.get('sort')||'latest';document.title='NEXTAPK – Android apps, ready to install';$('#q').value=q;
+ const go=o=>{const n=new URLSearchParams({q,cat,sort,...o});for(const[k,v]of[...n])if(!v)n.delete(k);nav('/?'+n)};
+ const grid=el('div',{class:'grid'},[1,2,3,4].map(()=>el('div',{class:'skel'})));
+ app.replaceChildren(el('section',{class:'hero'},el('h1',{},q?`Results for “${q}”`:'Android apps, ready to install'),el('p',{},'Apps built and published by NEXTAPK. Every APK is checked before it goes live.')),
+  el('div',{class:'chips',role:'group','aria-label':'Categories'},['All',...CATS].map(c=>el('button',{class:'chip','aria-pressed':String((c=='All'&&!cat)||c==cat),onclick:()=>go({cat:c=='All'?'':c})},c))),
+  el('div',{class:'tools'},el('span',{class:'mut',id:'n'}),el('select',{'aria-label':'Sort',onchange:e=>go({sort:e.target.value})},[['latest','Latest'],['downloads','Most downloaded'],['rating','Highest rated'],['name','A–Z'],['updated','Recently updated']].map(([v,t])=>el('option',{value:v,...(v==sort?{selected:''}:{})},t)))),grid);
+ try{const d=await api('apps?'+new URLSearchParams({q,cat,sort}));$('#n').textContent=d.total+' apps';grid.replaceChildren(...(d.items.length?d.items.map(card):[el('div',{class:'empty'},q||cat?'No apps match your search. Try another keyword or category.':'No apps published yet.')]))}catch(e){grid.replaceChildren(el('div',{class:'empty'},e.message))}}
+async function detail(slug){app.replaceChildren(el('div',{class:'skel',style:'margin:24px 0;height:160px'}));
+ try{const a=await api('apps/'+slug);document.title=`${a.name} APK v${a.ver} – NEXTAPK`;
+  const row=(k,v)=>v?el('div',{class:'row'},el('span',{class:'mut'},k),el('span',{},v)):null;
+  app.replaceChildren(el('p',{class:'mut'},el('a',{href:'/'},'Apps'),' › ',a.cat,' › ',a.name),
+   el('div',{class:'panel head'},icon(a),el('div',{style:'flex:1'},el('h1',{style:'margin:0'},a.name),el('div',{class:'mut'},a.dev),el('div',{class:'mut'},`${a.rating?'★ '+a.rating.toFixed(1)+' ('+a.rc+' ratings) · ':''}v${a.ver} · ${mb(a.size)} · ${a.dl.toLocaleString()} downloads`)),
+    a.demo?el('span',{class:'mut'},'Sample listing – no file yet'):el('a',{class:'btn',href:`/api/download/${a.slug}`,download:'',onclick:()=>toast('Download started')},'Download APK')),
+   el('div',{class:'panel'},el('h2',{},'About this app'),el('p',{style:'white-space:pre-wrap;max-width:70ch'},a.desc||'No description yet.')),
+   el('div',{class:'panel'},el('h2',{},'Details'),row('Package',a.pkg),row('Category',a.cat),row('Minimum Android SDK',a.minSdk),row('Target SDK',a.targetSdk),row('Updated',day(a.updated)),
+    el('button',{class:'btn ghost',style:'margin-top:12px',onclick:()=>navigator.clipboard.writeText(location.href).then(()=>toast('Link copied'))},'Copy link')),
+   el('div',{class:'panel'},el('h2',{},'Versions'),a.versions.map((v,i)=>el('div',{class:'row'},el('div',{},el('b',{},'v'+v.ver),i?'':' (current)',el('div',{class:'mut'},`${day(v.date)} · ${mb(v.size)}`),el('div',{style:'white-space:pre-wrap'},v.changelog)),a.demo?null:el('a',{class:'btn ghost',href:`/api/download/${a.slug}?v=${encodeURIComponent(v.ver)}`,download:''},'Download')))))}
+ catch{notfound()}}
+const notfound=()=>{document.title='Not found – NEXTAPK';app.replaceChildren(el('div',{class:'empty'},el('h1',{},'Page not found'),el('a',{class:'btn alt',href:'/'},'Browse apps')))};
+const page=(t,...b)=>{document.title=t+' – NEXTAPK';app.replaceChildren(el('div',{class:'panel',style:'max-width:70ch'},el('h1',{},t),...b))};
+function terms(){page('Terms & Conditions',el('p',{},'Apps on NEXTAPK are published and managed by the site administrator. They are provided as-is, without warranty. Download and install software only if you trust its publisher. By downloading you accept responsibility for your device and data.'),el('p',{},'Copyright concerns can be sent to the contact address for this site.'),el('p',{class:'mut'},el('a',{href:'/publisher'},'Publisher sign in')))}
+function about(){page('About & APK safety',el('p',{},'NEXTAPK distributes Android apps built by its administrator.'),el('h2',{id:'safety'},'APK safety'),el('p',{},'Uploaded files are validated as APK archives and stored as non-executable data. Android will ask permission before installing outside the Play Store — only continue for apps you trust.'))}
+async function publisher(){document.title='Publisher – NEXTAPK';const{admin}=await api('me');if(!admin)return login();dash()}
+function login(){const f=el('form',{class:'panel',style:'max-width:380px;margin:40px auto',onsubmit:async e=>{e.preventDefault();try{await api('login',{method:'POST',json:{email:f.email.value,password:f.password.value}});route()}catch(x){toast(x.message)}}},el('h1',{},'Publisher sign in'),el('label',{},'Email'),el('input',{name:'email',type:'email',required:'',autocomplete:'username'}),el('label',{},'Password'),el('input',{name:'password',type:'password',required:'',autocomplete:'current-password'}),el('p',{},el('button',{class:'btn alt'},'Sign in')));app.replaceChildren(f)}
+async function dash(){const[s,l]=await Promise.all([api('admin/stats'),api('apps?all=1')]);
+ const stat=(k,v)=>el('div',{class:'panel',style:'flex:1;min-width:120px;margin:0'},el('div',{class:'mut'},k),el('h2',{style:'margin:0'},v));
+ const f=el('form',{class:'panel',onsubmit:upload},el('h2',{},'Upload APK'),el('div',{class:'two'},[['name','App name'],['pkg','Package name'],['ver','Version name'],['vc','Version code'],['dev','Developer'],['minSdk','Minimum SDK'],['targetSdk','Target SDK']].map(([n,t])=>el('div',{},el('label',{},t),el('input',{name:n})))),
+  el('label',{},'Category'),el('select',{name:'cat'},CATS.map(c=>el('option',{},c))),el('label',{},'Description'),el('textarea',{name:'desc',rows:'4'}),el('label',{},'Changelog'),el('textarea',{name:'changelog',rows:'2'}),
+  el('label',{},'APK file'),el('input',{name:'apk',type:'file',accept:'.apk',required:''}),el('label',{},'Icon (PNG/JPG/WebP, under 1 MB)'),el('input',{name:'icon',type:'file',accept:'image/*'}),
+  el('label',{},el('input',{name:'pub',type:'checkbox',style:'width:auto'}),' Publish now (otherwise saved as draft)'),el('p',{},el('button',{class:'btn alt',id:'ub'},'Upload')));
+ app.replaceChildren(el('div',{class:'tools'},el('h1',{},'Dashboard'),el('span',{},el('button',{class:'btn ghost',onclick:async()=>{const r=await api('admin/demo',{method:'POST'});toast(r.added+' sample apps added');dash()}},'Load sample apps'),' ',el('button',{class:'btn ghost',onclick:async()=>{await api('admin/demo',{method:'DELETE'});toast('Sample apps removed');dash()}},'Remove sample apps'),' ',el('button',{class:'btn ghost',onclick:async()=>{await api('logout',{method:'POST'});nav('/')}},'Sign out'))),
+  el('div',{style:'display:flex;gap:12px;flex-wrap:wrap'},stat('Apps',s.apps),stat('Downloads',s.total),stat('Today',s.today),stat('7 days',s.week),stat('30 days',s.month)),f,
+  el('div',{class:'panel'},el('h2',{},'Apps'),l.items.length?l.items.map(a=>el('div',{class:'row'},el('span',{},el('a',{href:'/app/'+a.slug},el('b',{},a.name)),` v${a.ver} · ${a.dl} downloads · ${a.status}`),el('span',{},
+   el('button',{class:'btn ghost',onclick:async()=>{await api('admin/apps/'+a.slug,{method:'PATCH',json:{status:a.status=='published'?'draft':'published'}});dash()}},a.status=='published'?'Unpublish':'Publish'),' ',
+   el('button',{class:'btn ghost',onclick:async()=>{if(confirm('Delete '+a.name+' and all its versions?')){await api('admin/apps/'+a.slug,{method:'DELETE'});toast('Deleted');dash()}}},'Delete')))):el('div',{class:'empty'},'No apps yet. Upload your first APK above.')))}
+async function upload(e){e.preventDefault();const f=e.target,b=$('#ub'),file=f.apk.files[0];b.disabled=true;
+ try{const id=crypto.randomUUID(),CH=4e6,n=Math.ceil(file.size/CH);
+  for(let i=0;i<n;i++){b.textContent=`Uploading ${i+1}/${n}…`;await api(`admin/chunk?id=${id}&i=${i}`,{method:'POST',body:file.slice(i*CH,(i+1)*CH),headers:{'content-type':'application/octet-stream'}})}
+  let icon=null;if(f.icon.files[0])icon=await new Promise(r=>{const x=new FileReader();x.onload=()=>r(x.result);x.readAsDataURL(f.icon.files[0])});
+  const j=Object.fromEntries(['name','pkg','ver','vc','dev','minSdk','targetSdk','cat','desc','changelog'].map(k=>[k,f[k].value]));
+  await api('admin/apps',{method:'POST',json:{...j,uploadId:id,chunks:n,icon,status:f.pub.checked?'published':'draft'}});toast('Saved');dash()}
+ catch(x){toast(x.message);b.disabled=false;b.textContent='Upload'}}
+function route(){const p=location.pathname;scrollTo(0,0);if(p=='/')home();else if(p.startsWith('/app/'))detail(p.slice(5));else if(p=='/terms')terms();else if(p=='/about')about();else if(p=='/publisher')publisher();else notfound()}
+route();
+</script></body></html>
